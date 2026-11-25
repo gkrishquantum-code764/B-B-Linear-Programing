@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B & B Linerar Programing</title>
+  <style>
+    :root {
+      --bg-app: #f1f5f9;
+      --bg-panel: #ffffff;
+      --bg-header: #0f172a;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --accent: #0ea5e9;
+      --success: #059669;
+      --success-bg: #ecfdf5;
+      --danger: #e11d48;
+      --danger-bg: #fff1f2;
+      --warning: #d97706;
+      --warning-bg: #fffbeb;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Header */
+    header {
+      background: var(--bg-header);
+      color: #ffffff;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    }
+
+    .brand h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-header {
+      padding: 7px 14px;
+      border-radius: 7px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #f8fafc;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-header:hover {
+      background: #334155;
+    }
+
+    .btn-header.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .btn-header.primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-header.light {
+      background: #ffffff;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .btn-header.light:hover {
+      background: #f8fafc;
+    }
+
+    /* Main 3-Column Workspace */
+    .workspace {
+      display: grid;
+      grid-template-columns: 350px 1fr 425px;
+      gap: 16px;
+      padding: 16px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .panel {
+      background: var(--bg-panel);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-scroll {
+      padding: 18px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* Mode Switcher Tabs in Left Sidebar */
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 5px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      border: 1px solid var(--border);
+    }
+
+    .mode-tab {
+      padding: 8px 6px;
+      border: none;
+      border-radius: 7px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+
+    .mode-tab.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .control-group {
+      margin-bottom: 18px;
+    }
+
+    .obj-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    select, input[type="text"], input[type="number"] {
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: var(--text-main);
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    }
+
+    .obj-row select {
+      width: 112px;
+      font-weight: 600;
+    }
+
+    .obj-row input {
+      flex: 1;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-weight: 600;
+    }
+
+    .btn-add-line {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-add-line:hover {
+      background: #e0e7ff;
+    }
+
+    .constraint-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .constraint-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      padding: 7px 8px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+    }
+
+    .roman-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: #e0e7ff;
+      color: var(--primary);
+      font-size: 0.74rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .constraint-row input.full-eq {
+      flex: 1;
+      min-width: 140px;
+      padding: 7px 10px;
+      font-family: 'Consolas', monospace;
+      font-weight: 600;
+    }
+
+    .btn-remove {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.15rem;
+      cursor: pointer;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    .btn-remove:hover {
+      color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    .hint-text {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    /* Toggle Switch */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      margin-bottom: 12px;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #cbd5e1;
+      transition: .2s;
+      border-radius: 22px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(18px);
+    }
+
+    .btn-solve {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.28);
+      transition: transform 0.1s, box-shadow 0.15s;
+    }
+
+    .btn-solve:hover {
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.38);
+    }
+
+    .btn-solve:active {
+      transform: translateY(1px);
+    }
+
+    .error-banner {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid #fecdd3;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    /* Reverse Mode (Points -> Inequality) Cards */
+    .rev-line-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .rev-line-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .rev-pts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .rev-pts-grid input {
+      width: 100%;
+      padding: 6px 8px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .rev-pts-grid select {
+      padding: 6px 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* Center Solution Paper */
+    .problem-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 22px;
+    }
+
+    .problem-box .tag {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+
+    .problem-box p {
+      font-family: 'Georgia', serif;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: #1e293b;
+    }
+
+    .step-block {
+      margin-bottom: 24px;
+    }
+
+    .step-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #475569;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+
+    .sol-text {
+      font-family: 'Georgia', serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: #1e293b;
+      margin-bottom: 10px;
+    }
+
+    .eq-list {
+      list-style: none;
+      padding-left: 14px;
+      margin: 10px 0;
+      font-family: 'Georgia', serif;
+      font-size: 1.02rem;
+    }
+
+    .eq-list li {
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      max-width: 340px;
+    }
+
+    .line-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      background: #ffffff;
+    }
+
+    .line-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge-status {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .badge-true {
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid #a7f3d0;
+    }
+
+    .badge-false {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid #fecdd3;
+    }
+
+    .badge-info {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid #c7d2fe;
+    }
+
+    .coord-flex {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin: 12px 0;
+      flex-wrap: wrap;
+    }
+
+    table.coord-table {
+      border-collapse: collapse;
+      font-family: 'Consolas', monospace;
+      font-size: 0.95rem;
+    }
+
+    table.coord-table td {
+      border: 1.5px solid #334155;
+      padding: 6px 14px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    table.coord-table td.head-cell {
+      background: #f1f5f9;
+      font-weight: 800;
+    }
+
+    table.eval-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 0.95rem;
+    }
+
+    table.eval-table th, table.eval-table td {
+      border: 1px solid #cbd5e1;
+      padding: 10px 12px;
+      text-align: center;
+    }
+
+    table.eval-table th {
+      background: #f1f5f9;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    table.eval-table tr.row-max {
+      background: #ecfdf5;
+      font-weight: 700;
+    }
+
+    table.eval-table tr.row-min {
+      background: #eff6ff;
+      font-weight: 700;
+    }
+
+    .conclusion-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid var(--success);
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-family: 'Georgia', serif;
+      font-size: 1.04rem;
+      line-height: 1.6;
+      color: #064e3b;
+      margin-top: 14px;
+    }
+
+    .warning-box {
+      background: var(--warning-bg);
+      border: 1px solid #fde68a;
+      border-left: 4px solid var(--warning);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #92400e;
+      margin-bottom: 14px;
+    }
+
+    .no-sol-box {
+      background: var(--danger-bg);
+      border: 1px solid #fecdd3;
+      border-left: 4px solid var(--danger);
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-family: 'Georgia', serif;
+      font-size: 1.02rem;
+      line-height: 1.6;
+      color: #881337;
+      margin-top: 12px;
+    }
+
+    /* Right Graph Panel */
+    .graph-header {
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .graph-header h2 {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .graph-scale {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      margin-bottom: 10px;
+    }
+
+    .graph-toggles {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .pill-btn {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+    }
+
+    .pill-btn.active {
+      background: #e0e7ff;
+      border-color: #a5b4fc;
+      color: var(--primary);
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      background: #ffffff;
+    }
+
+    canvas {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #fff;
+      max-width: 100%;
+      max-height: 100%;
+      cursor: crosshair;
+    }
+
+    .zoom-controls {
+      position: absolute;
+      bottom: 22px;
+      right: 22px;
+      display: flex;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.94);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .zoom-controls button {
+      padding: 4px 10px;
+      border: none;
+      background: transparent;
+      font-weight: 700;
+      font-size: 0.82rem;
+      color: #334155;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .zoom-controls button:hover {
+      background: #f1f5f9;
+    }
+
+    .tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(15, 23, 42, 0.92);
+      color: #fff;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: none;
+      z-index: 20;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      white-space: nowrap;
+    }
+
+    /* Theory Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: #fff;
+      border-radius: 14px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+
+    .modal-head {
+      padding: 16px 22px;
+      background: var(--bg-header);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+
+    .def-item {
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .def-item h4 {
+      color: var(--primary);
+      font-size: 0.96rem;
+      margin-bottom: 4px;
+    }
+
+    .def-item p {
+      font-size: 0.92rem;
+      color: #334155;
+    }
+
+    @media (max-width: 1120px) {
+      body { height: auto; overflow: auto; }
+      .workspace { grid-template-columns: 1fr; overflow: visible; }
+      .canvas-wrapper { min-height: 400px; }
+    }
+
+    @media print {
+      header, .left-panel, .graph-toggles, .zoom-controls { display: none !important; }
+      body { background: #fff; height: auto; overflow: visible; }
+      .workspace { display: block; padding: 0; }
+      .panel { border: none; box-shadow: none; margin-bottom: 20px; }
+      .panel-scroll { overflow: visible; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">B&amp;B</div>
+      <h1>B &amp; B LPP Studio</h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn-header" onclick="openTheoryModal()">📖 Key Definitions</button>
+      <button class="btn-header primary" onclick="animateGraph()">▶ Animate Graph</button>
+      <button class="btn-header" onclick="exportPNG()">⬇ Export PNG</button>
+      <button class="btn-header" onclick="copySolution()">📋 Copy Solution</button>
+      <button class="btn-header light" onclick="window.print()">🖨 Print / PDF</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <!-- Left Sidebar -->
+    <section class="panel left-panel">
+      <div class="panel-scroll">
+        <!-- Mode Switcher -->
+        <div class="mode-tabs">
+          <button class="mode-tab active" id="tabForward" onclick="switchMode('forward')">Solve Inequalities</button>
+          <button class="mode-tab" id="tabReverse" onclick="switchMode('reverse')">Points → Inequalities</button>
+        </div>
+
+        <!-- MODE 1: FORWARD SOLVER (Supports Single Inequality, 2x+y<=14, y<=2x+4, P=6x+10y+20, No-Solution) -->
+        <div id="forwardPane">
+          <div class="toggle-row">
+            <span>Include Objective Function (Z / P)</span>
+            <label class="switch">
+              <input type="checkbox" id="hasObjToggle" checked onchange="toggleObjSection()" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="control-group" id="objControlGroup">
+            <div class="section-label">
+              <span>1. Objective Function</span>
+              <span style="font-family: monospace; font-weight: 500;">Z = ax + by + c</span>
+            </div>
+            <div class="obj-row">
+              <select id="optType">
+                <option value="Maximize" selected>Maximize</option>
+                <option value="Minimize">Minimize</option>
+              </select>
+              <input type="text" id="objInput" value="Z = 2x + 3y" placeholder="e.g. P = 6x + 10y + 20" />
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="section-label">
+              <span>2. Inequalities / Constraints</span>
+              <button class="btn-add-line" onclick="addConstraintRow()">+ Add Line</button>
+            </div>
+            <div class="constraint-list" id="constraintList"></div>
+            <div class="hint-text">
+              Supports any form: <code>2x + y &lt;= 14</code>, <code>y &lt;= 2x + 4</code>, <code>x &gt;= 3</code>, or single inequality graphs.
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <span>First Quadrant (x ≥ 0, y ≥ 0)</span>
+            <label class="switch">
+              <input type="checkbox" id="firstQuadToggle" checked onchange="solveForward()" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <button class="btn-solve" onclick="solveForward()">Solve &amp; Plot Graph</button>
+        </div>
+
+        <!-- MODE 2: REVERSE SOLVER (Find Inequalities from Graph Points - Q.No. 8a/8b) -->
+        <div id="reversePane" style="display: none;">
+          <div class="control-group">
+            <div class="section-label">
+              <span>1. Boundary Lines (From 2 Points)</span>
+              <button class="btn-add-line" onclick="addRevLineRow()">+ Add Line</button>
+            </div>
+            <div id="revLineList"></div>
+            <div class="hint-text">
+              Enter 2 points on each boundary line, e.g. <code>(2,0)</code> and <code>(0,5)</code>, and choose which side is shaded.
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <span>First Quadrant (x ≥ 0, y ≥ 0)</span>
+            <label class="switch">
+              <input type="checkbox" id="revFirstQuad" checked onchange="solveReverse()" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="control-group">
+            <div class="section-label">
+              <span>2. Objective Function</span>
+            </div>
+            <div class="obj-row">
+              <select id="revOptType">
+                <option value="Minimize" selected>Minimize</option>
+                <option value="Maximize">Maximize</option>
+              </select>
+              <input type="text" id="revObjInput" value="P = 6x + 10y + 20" placeholder="P = 6x + 10y + 20" />
+            </div>
+          </div>
+
+          <button class="btn-solve" onclick="solveReverse()">Find Inequalities &amp; Solve</button>
+        </div>
+
+        <div class="error-banner" id="errorBanner"></div>
+      </div>
+    </section>
+
+    <!-- Center Solution Sheet -->
+    <section class="panel">
+      <div class="panel-scroll" id="solutionOutput"></div>
+    </section>
+
+    <!-- Right Graph Panel -->
+    <section class="panel">
+      <div class="graph-header">
+        <h2>Graph &amp; Feasible Region</h2>
+        <div class="graph-scale" id="scaleText">Scale: 1 major division = 1 unit</div>
+        <div class="graph-toggles">
+          <button class="pill-btn active" id="btnShading" onclick="toggleOption('shading')">Shading: ON</button>
+          <button class="pill-btn active" id="btnLabels" onclick="toggleOption('labels')">Labels: ON</button>
+          <button class="pill-btn active" id="btnGrid" onclick="toggleOption('grid')">Grid: ON</button>
+        </div>
+      </div>
+      <div class="canvas-wrapper" id="canvasWrapper">
+        <canvas id="lppCanvas" width="420" height="420"></canvas>
+        <div class="tooltip" id="vertexTooltip"></div>
+        <div class="zoom-controls">
+          <button onclick="changeZoom(-2)" title="Zoom In">+</button>
+          <button onclick="changeZoom(2)" title="Zoom Out">−</button>
+          <button onclick="resetZoom()">Auto</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Theory & Definitions Modal (From Linear Programming_3.pptx Q.1 & Q.2) -->
+  <div class="modal-backdrop" id="theoryModal" onclick="if(event.target===this) closeTheoryModal()">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>SEE Optional Math — Linear Programming Definitions</h3>
+        <button class="btn-header" onclick="closeTheoryModal()">✕ Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="def-item">
+          <h4>1. Linear Programming</h4>
+          <p>A mathematical technique of getting a maximum or minimum (or both) value of a linear objective function satisfying a given set of linear constraints is called linear programming.</p>
+        </div>
+        <div class="def-item">
+          <h4>2. Objective Function</h4>
+          <p>A linear function whose maximum or minimum value is to be calculated is called an objective function. <br><em>Example:</em> <code>Z = 2x + 3y</code> or <code>P = 6x + 10y + 20</code>.</p>
+        </div>
+        <div class="def-item">
+          <h4>3. Constraints</h4>
+          <p>The conditions or restrictions in a linear programming problem which must be satisfied by the variables of the objective function are called constraints. <br><em>Example:</em> <code>2x + y ≤ 14, x ≥ 0, y ≥ 0</code>.</p>
+        </div>
+        <div class="def-item">
+          <h4>4. Feasible Region (Convex Polygonal Region)</h4>
+          <p>A closed plane region bounded by the intersection of a finite number of boundary lines is called a feasible region. It is the common solution region satisfied by all given constraints.</p>
+        </div>
+        <div class="def-item" style="border:none; margin:0; padding:0;">
+          <h4>5. Feasible Solution &amp; System of Inequalities</h4>
+          <p>A set of two or more inequalities in one or more variables is a <strong>system of inequalities</strong>. The values of variables $(x, y)$ that satisfy all the given constraints are called a <strong>feasible solution</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+    const LINE_COLORS = ['#2563eb', '#dc2626', '#059669', '#d97706', '#7c3aed', '#0891b2'];
+
+    let state = {
+      mode: 'forward',
+      shading: true,
+      labels: true,
+      grid: true,
+      minX: -4,
+      maxX: 10,
+      minY: -4,
+      maxY: 10,
+      autoBounds: { minX: -4, maxX: 10, minY: -4, maxY: 10 },
+      animProgress: 1,
+      lastResult: null,
+      screenVertices: []
+    };
+
+    function toRoman(num) {
+      return ROMAN[num - 1] || num.toString();
+    }
+
+    function openTheoryModal() {
+      document.getElementById('theoryModal').style.display = 'flex';
+    }
+
+    function closeTheoryModal() {
+      document.getElementById('theoryModal').style.display = 'none';
+    }
+
+    function switchMode(mode) {
+      state.mode = mode;
+      document.getElementById('tabForward').classList.toggle('active', mode === 'forward');
+      document.getElementById('tabReverse').classList.toggle('active', mode === 'reverse');
+      document.getElementById('forwardPane').style.display = mode === 'forward' ? 'block' : 'none';
+      document.getElementById('reversePane').style.display = mode === 'reverse' ? 'block' : 'none';
+      document.getElementById('errorBanner').style.display = 'none';
+      if (mode === 'forward') solveForward();
+      else solveReverse();
+    }
+
+    function toggleObjSection() {
+      const hasObj = document.getElementById('hasObjToggle').checked;
+      document.getElementById('objControlGroup').style.display = hasObj ? 'block' : 'none';
+      solveForward();
+    }
+
+    function addConstraintRow(eqStr = '2x + y <= 14') {
+      const list = document.getElementById('constraintList');
+      const idx = list.children.length + 1;
+      const row = document.createElement('div');
+      row.className = 'constraint-row';
+      row.innerHTML = `
+        <span class="roman-badge">${toRoman(idx)}</span>
+        <input type="text" class="full-eq" value="${eqStr}" placeholder="e.g. 2x + y <= 14 or y <= 2x + 4" />
+        <button class="btn-remove" title="Remove" onclick="removeConstraintRow(this)">×</button>
+      `;
+      list.appendChild(row);
+      refreshRomanBadges();
+    }
+
+    function removeConstraintRow(btn) {
+      const list = document.getElementById('constraintList');
+      if (list.children.length <= 1) return;
+      btn.parentElement.remove();
+      refreshRomanBadges();
+      solveForward();
+    }
+
+    function refreshRomanBadges() {
+      const rows = document.querySelectorAll('#constraintList .constraint-row');
+      rows.forEach((row, i) => {
+        row.querySelector('.roman-badge').textContent = toRoman(i + 1);
+      });
+    }
+
+    // Add Reverse Mode line row (2 points + side)
+    function addRevLineRow(p1 = '(2, 0)', p2 = '(0, 5)', side = 'origin') {
+      const list = document.getElementById('revLineList');
+      const idx = list.children.length + 1;
+      const card = document.createElement('div');
+      card.className = 'rev-line-card';
+      card.innerHTML = `
+        <div class="rev-line-top">
+          <span>Boundary Line (${toRoman(idx)})</span>
+          <button class="btn-remove" onclick="removeRevLineRow(this)" style="padding:0 4px;">×</button>
+        </div>
+        <div class="rev-pts-grid">
+          <input type="text" class="rev-p1" value="${p1}" placeholder="(x1, y1)" />
+          <input type="text" class="rev-p2" value="${p2}" placeholder="(x2, y2)" />
+          <select class="rev-side">
+            <option value="origin" ${side === 'origin' ? 'selected' : ''}>Toward Origin / Below</option>
+            <option value="away" ${side === 'away' ? 'selected' : ''}>Away from Origin / Above</option>
+          </select>
+        </div>
+      `;
+      list.appendChild(card);
+    }
+
+    function removeRevLineRow(btn) {
+      const list = document.getElementById('revLineList');
+      if (list.children.length <= 1) return;
+      btn.closest('.rev-line-card').remove();
+      solveReverse();
+    }
+
+    // Parse linear side expression into { a, b, k } representing a*x + b*y + k
+    function parseSideTokens(expr) {
+      let clean = expr.replace(/\s+/g, '').toLowerCase();
+      if (!clean) return { a: 0, b: 0, k: 0 };
+      const tokens = clean.match(/[+-]?[^+-]+/g);
+      if (!tokens) return null;
+
+      let a = 0, b = 0, k = 0;
+      for (let tok of tokens) {
+        if (tok.includes('x')) {
+          let coef = tok.replace('x', '');
+          if (coef === '' || coef === '+') a += 1;
+          else if (coef === '-') a -= 1;
+          else a += parseFloat(coef);
+        } else if (tok.includes('y')) {
+          let coef = tok.replace('y', '');
+          if (coef === '' || coef === '+') b += 1;
+          else if (coef === '-') b -= 1;
+          else b += parseFloat(coef);
+        } else {
+          k += parseFloat(tok);
+        }
+      }
+      if (isNaN(a) || isNaN(b) || isNaN(k)) return null;
+      return { a, b, k };
+    }
+
+    // Parse Objective Function: "Z = 2x + 3y" or "P = 6x + 10y + 20"
+    function parseObjective(str) {
+      let varName = 'Z';
+      let rhs = str;
+      if (str.includes('=')) {
+        const parts = str.split('=');
+        varName = parts[0].trim() || 'Z';
+        rhs = parts[1];
+      }
+      const parsed = parseSideTokens(rhs);
+      if (!parsed || (parsed.a === 0 && parsed.b === 0)) return null;
+      return { varName, a: parsed.a, b: parsed.b, k: parsed.k };
+    }
+
+    // Parse ANY linear inequality: "2x + y <= 14", "y <= 2x + 4", "x >= 3", "4x + 3y ≥ 12"
+    function parseGeneralInequality(str) {
+      let normalized = str.replace(/≤/g, '<=').replace(/≥/g, '>=');
+      const match = normalized.match(/(<=|>=|=)/);
+      if (!match) return null;
+
+      const op = match[1];
+      const parts = normalized.split(op);
+      if (parts.length !== 2) return null;
+
+      const left = parseSideTokens(parts[0]);
+      const right = parseSideTokens(parts[1]);
+      if (!left || !right) return null;
+
+      // Move all x, y to left and constants to right: (left.a - right.a)x + (left.b - right.b)y [op] (right.k - left.k)
+      let a = fmtNum(left.a - right.a);
+      let b = fmtNum(left.b - right.b);
+      let c = fmtNum(right.k - left.k);
+      let finalOp = op;
+
+      if (a === 0 && b === 0) return null;
+
+      // Keep leading coefficient positive for clean display when convenient (optional)
+      if (a < 0 && b <= 0) {
+        a = -a; b = -b; c = -c;
+        if (finalOp === '<=') finalOp = '>=';
+        else if (finalOp === '>=') finalOp = '<=';
+      }
+
+      return { a, b, op: finalOp, c, raw: str.trim() };
+    }
+
+    function formatExpr(a, b, k = 0) {
+      let parts = [];
+      if (a !== 0) {
+        parts.push(a === 1 ? 'x' : a === -1 ? '-x' : `${a}x`);
+      }
+      if (b !== 0) {
+        if (parts.length === 0) {
+          parts.push(b === 1 ? 'y' : b === -1 ? '-y' : `${b}y`);
+        } else {
+          const sign = b > 0 ? ' + ' : ' − ';
+          const absB = Math.abs(b);
+          parts.push(sign + (absB === 1 ? 'y' : `${absB}y`));
+        }
+      }
+      if (k !== 0) {
+        const sign = k > 0 ? ' + ' : ' − ';
+        parts.push(sign + Math.abs(k));
+      }
+      return parts.join('');
+    }
+
+    function formatOp(op) {
+      if (op === '<=') return '≤';
+      if (op === '>=') return '≥';
+      return '=';
+    }
+
+    function fmtNum(n) {
+      if (Math.abs(n) < 1e-9) return 0;
+      return Number.isInteger(n) ? n : parseFloat(n.toFixed(2));
+    }
+
+    function gcd(a, b) {
+      a = Math.abs(Math.round(a));
+      b = Math.abs(Math.round(b));
+      while (b) { [a, b] = [b, a % b]; }
+      return a || 1;
+    }
+
+    function getTwoCleanPoints(a, b, c) {
+      if (b === 0) {
+        const xVal = fmtNum(c / a);
+        return [{ x: xVal, y: 0 }, { x: xVal, y: 4 }];
+      }
+      if (a === 0) {
+        const yVal = fmtNum(c / b);
+        return [{ x: 0, y: yVal }, { x: 4, y: yVal }];
+      }
+
+      let pts = [];
+      for (let x = -10; x <= 20; x++) {
+        const y = (c - a * x) / b;
+        if (Math.abs(y - Math.round(y)) < 1e-7 && y >= -10 && y <= 25) {
+          pts.push({ x: x, y: Math.round(y) });
+        }
+      }
+
+      if (pts.length >= 2) {
+        const firstQuadPts = pts.filter(p => p.x >= 0 && p.y >= 0 && !(p.x === 0 && p.y === 0));
+        if (firstQuadPts.length >= 2) {
+          return [firstQuadPts[0], firstQuadPts[1]];
+        }
+        return [pts[Math.floor(pts.length / 2)], pts[Math.floor(pts.length / 2) + 1] || pts[0]];
+      }
+
+      const xInt = fmtNum(c / a);
+      const yInt = fmtNum(c / b);
+      if (xInt === 0 && yInt === 0) {
+        return [{ x: 0, y: 0 }, { x: fmtNum(b), y: fmtNum(-a) }];
+      }
+      return [{ x: xInt, y: 0 }, { x: 0, y: yInt }];
+    }
+
+    function intersectLines(L1, L2) {
+      const det = L1.a * L2.b - L2.a * L1.b;
+      if (Math.abs(det) < 1e-9) return null;
+      const x = (L1.c * L2.b - L2.c * L1.b) / det;
+      const y = (L1.a * L2.c - L2.a * L1.c) / det;
+      return { x: fmtNum(x), y: fmtNum(y) };
+    }
+
+    function satisfiesAll(pt, constraints) {
+      const eps = 1e-7;
+      for (let con of constraints) {
+        const val = con.a * pt.x + con.b * pt.y;
+        if (con.op === '<=' && val > con.c + eps) return false;
+        if (con.op === '>=' && val < con.c - eps) return false;
+        if (con.op === '=' && Math.abs(val - con.c) > eps) return false;
+      }
+      return true;
+    }
+
+    function solveForward() {
+      const errEl = document.getElementById('errorBanner');
+      errEl.style.display = 'none';
+
+      const hasObj = document.getElementById('hasObjToggle').checked;
+      const optType = document.getElementById('optType').value;
+      let objParsed = null;
+
+      if (hasObj) {
+        objParsed = parseObjective(document.getElementById('objInput').value);
+        if (!objParsed) {
+          errEl.textContent = 'Invalid Objective Function. Example: Z = 2x + 3y or P = 6x + 10y + 20';
+          errEl.style.display = 'block';
+          return;
+        }
+      }
+
+      const rows = document.querySelectorAll('#constraintList .constraint-row');
+      let userConstraints = [];
+
+      for (let i = 0; i < rows.length; i++) {
+        const eqStr = rows[i].querySelector('.full-eq').value;
+        const parsed = parseGeneralInequality(eqStr);
+        if (!parsed) {
+          errEl.textContent = `Check Inequality (${toRoman(i + 1)}): "${eqStr}". Example: 2x + y <= 14 or y <= 2x + 4`;
+          errEl.style.display = 'block';
+          return;
+        }
+        userConstraints.push({
+          roman: toRoman(i + 1),
+          ...parsed,
+          color: LINE_COLORS[i % LINE_COLORS.length],
+          points: getTwoCleanPoints(parsed.a, parsed.b, parsed.c)
+        });
+      }
+
+      const firstQuad = document.getElementById('firstQuadToggle').checked;
+      runEngine({
+        mode: 'forward',
+        hasObj,
+        optType,
+        obj: objParsed,
+        userConstraints,
+        firstQuad,
+        reverseDerivationHtml: ''
+      });
+    }
+
+    function parsePointStr(str) {
+      const clean = str.replace(/[()]/g, '').trim();
+      const parts = clean.split(',');
+      if (parts.length !== 2) return null;
+      const x = parseFloat(parts[0]);
+      const y = parseFloat(parts[1]);
+      if (isNaN(x) || isNaN(y)) return null;
+      return { x, y };
+    }
+
+    // Reverse Solver: Derive boundary equations & inequalities from 2 points (Q.No. 8a/8b)
+    function solveReverse() {
+      const errEl = document.getElementById('errorBanner');
+      errEl.style.display = 'none';
+
+      const optType = document.getElementById('revOptType').value;
+      const objParsed = parseObjective(document.getElementById('revObjInput').value);
+      if (!objParsed) {
+        errEl.textContent = 'Invalid Objective Function. Example: P = 6x + 10y + 20';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      const cards = document.querySelectorAll('#revLineList .rev-line-card');
+      let userConstraints = [];
+      let revHtml = `
+        <div class="step-block">
+          <div class="step-title">Step 1: Deriving Equations &amp; Inequalities from Given Points</div>
+      `;
+
+      for (let i = 0; i < cards.length; i++) {
+        const p1 = parsePointStr(cards[i].querySelector('.rev-p1').value);
+        const p2 = parsePointStr(cards[i].querySelector('.rev-p2').value);
+        const side = cards[i].querySelector('.rev-side').value;
+
+        if (!p1 || !p2 || (p1.x === p2.x && p1.y === p2.y)) {
+          errEl.textContent = `Enter two distinct valid points for Boundary Line (${toRoman(i + 1)}), e.g. (2, 0) and (0, 5).`;
+          errEl.style.display = 'block';
+          return;
+        }
+
+        // Line through (x1, y1) and (x2, y2): (y2 - y1)x - (x2 - x1)y = x1*y2 - x2*y1
+        let a = p2.y - p1.y;
+        let b = -(p2.x - p1.x);
+        let c = p1.x * p2.y - p2.x * p1.y;
+
+        if (a < 0 || (a === 0 && b < 0)) {
+          a = -a; b = -b; c = -c;
+        }
+
+        if (Number.isInteger(a) && Number.isInteger(b) && Number.isInteger(c)) {
+          const g = gcd(gcd(a, b), c);
+          if (g > 1) { a /= g; b /= g; c /= g; }
+        }
+
+        a = fmtNum(a); b = fmtNum(b); c = fmtNum(c);
+        const eqStr = `${formatExpr(a, b)} = ${c}`;
+
+        // Determine inequality direction
+        let op = '<=';
+        if (c !== 0) {
+          // Test origin (0, 0)
+          if (side === 'origin') {
+            op = (0 <= c) ? '<=' : '>=';
+          } else {
+            op = (0 <= c) ? '>=' : '<=';
+          }
+        } else {
+          // Passes through origin: test (1, 0) or (0, 1)
+          const testVal = a * 1 + b * 0;
+          if (side === 'origin') {
+            op = (testVal <= 0) ? '<=' : '>=';
+          } else {
+            op = (testVal >= 0) ? '>=' : '<=';
+          }
+        }
+
+        const inqStr = `${formatExpr(a, b)} ${formatOp(op)} ${c}`;
+        const isInterceptForm = (p1.y === 0 && p2.x === 0 && p1.x !== 0 && p2.y !== 0) ||
+                                (p1.x === 0 && p2.y === 0 && p1.y !== 0 && p2.x !== 0);
+
+        let formulaUsed = '';
+        if (isInterceptForm) {
+          const xInt = p1.y === 0 ? p1.x : p2.x;
+          const yInt = p1.x === 0 ? p1.y : p2.y;
+          formulaUsed = `Using double-intercept form <strong>x/a + y/b = 1</strong> ⇒ x/${xInt} + y/${yInt} = 1 ⇒ <strong>${eqStr}</strong>.`;
+        } else {
+          formulaUsed = `Using two-point form <strong>(y − y₁) = [(y₂ − y₁)/(x₂ − x₁)](x − x₁)</strong> ⇒ <strong>${eqStr}</strong>.`;
+        }
+
+        revHtml += `
+          <div class="line-card" style="border-left: 4px solid ${LINE_COLORS[i % LINE_COLORS.length]};">
+            <p class="sol-text" style="margin-bottom:6px;">
+              <strong>Line (${toRoman(i + 1)})</strong> passes through <strong>(${p1.x}, ${p1.y})</strong> and <strong>(${p2.x}, ${p2.y})</strong>.<br>
+              ${formulaUsed}
+            </p>
+            <p class="sol-text" style="margin:0;">
+              Since the shaded region lies ${side === 'origin' ? 'toward the origin / below' : 'away from the origin / above'}, the inequality is <strong>${inqStr}</strong>.
+            </p>
+          </div>
+        `;
+
+        userConstraints.push({
+          roman: toRoman(i + 1),
+          a, b, op, c,
+          raw: inqStr,
+          color: LINE_COLORS[i % LINE_COLORS.length],
+          points: [p1, p2]
+        });
+      }
+
+      const firstQuad = document.getElementById('revFirstQuad').checked;
+      const allDerived = userConstraints.map(c => `${formatExpr(c.a, c.b)} ${formatOp(c.op)} ${c.c}`).join(', ') +
+        (firstQuad ? ', x ≥ 0, y ≥ 0' : '');
+
+      revHtml += `
+          <div class="conclusion-box" style="margin-top:8px;">
+            <strong>Required System of Inequalities:</strong> ${allDerived}
+          </div>
+        </div>
+      `;
+
+      runEngine({
+        mode: 'reverse',
+        hasObj: true,
+        optType,
+        obj: objParsed,
+        userConstraints,
+        firstQuad,
+        reverseDerivationHtml: revHtml
+      });
+    }
+
+    function runEngine(cfg) {
+      const { mode, hasObj, optType, obj, userConstraints, firstQuad, reverseDerivationHtml } = cfg;
+
+      let coreConstraints = [...userConstraints];
+      let nextIdx = userConstraints.length + 1;
+
+      if (firstQuad) {
+        coreConstraints.push({ roman: toRoman(nextIdx++), a: 1, b: 0, op: '>=', c: 0, isAxis: true });
+        coreConstraints.push({ roman: toRoman(nextIdx++), a: 0, b: 1, op: '>=', c: 0, isAxis: true });
+      }
+
+      // Compute true corner vertices
+      let trueVertices = [];
+      for (let i = 0; i < coreConstraints.length; i++) {
+        for (let j = i + 1; j < coreConstraints.length; j++) {
+          const pt = intersectLines(coreConstraints[i], coreConstraints[j]);
+          if (pt && satisfiesAll(pt, coreConstraints)) {
+            if (!trueVertices.some(p => Math.abs(p.x - pt.x) < 1e-6 && Math.abs(p.y - pt.y) < 1e-6)) {
+              trueVertices.push(pt);
+            }
+          }
+        }
+      }
+
+      // Bounding box check for Unbounded vs No-Solution (Q.No. 4a)
+      const M = 1000;
+      const boxConstraints = [
+        ...coreConstraints,
+        { a: 1, b: 0, op: '<=', c: M, isBox: true },
+        { a: 1, b: 0, op: '>=', c: -M, isBox: true },
+        { a: 0, b: 1, op: '<=', c: M, isBox: true },
+        { a: 0, b: 1, op: '>=', c: -M, isBox: true }
+      ];
+
+      let boundedPts = [];
+      for (let i = 0; i < boxConstraints.length; i++) {
+        for (let j = i + 1; j < boxConstraints.length; j++) {
+          const pt = intersectLines(boxConstraints[i], boxConstraints[j]);
+          if (pt && satisfiesAll(pt, boxConstraints)) {
+            if (!boundedPts.some(p => Math.abs(p.x - pt.x) < 1e-6 && Math.abs(p.y - pt.y) < 1e-6)) {
+              boundedPts.push(pt);
+            }
+          }
+        }
+      }
+
+      const noCommonRegion = (boundedPts.length === 0);
+      const isUnbounded = !noCommonRegion && boundedPts.some(p => Math.abs(p.x) >= M - 1 || Math.abs(p.y) >= M - 1);
+
+      if (trueVertices.length > 1) {
+        const cx = trueVertices.reduce((s, p) => s + p.x, 0) / trueVertices.length;
+        const cy = trueVertices.reduce((s, p) => s + p.y, 0) / trueVertices.length;
+        trueVertices.sort((p1, p2) => Math.atan2(p1.y - cy, p1.x - cx) - Math.atan2(p2.y - cy, p2.x - cx));
+      }
+
+      const originIdx = trueVertices.findIndex(p => p.x === 0 && p.y === 0);
+      if (originIdx > 0) {
+        trueVertices = [...trueVertices.slice(originIdx), ...trueVertices.slice(0, originIdx)];
+      }
+
+      let letterCode = 65;
+      const vertices = trueVertices.map(pt => {
+        let label = (pt.x === 0 && pt.y === 0) ? 'O' : String.fromCharCode(letterCode++);
+        const zVal = obj ? fmtNum(obj.a * pt.x + obj.b * pt.y + obj.k) : 0;
+        return { label, x: pt.x, y: pt.y, z: zVal };
+      });
+
+      const zValues = vertices.map(v => v.z);
+      const maxZ = zValues.length ? Math.max(...zValues) : 0;
+      const minZ = zValues.length ? Math.min(...zValues) : 0;
+
+      // Smart plot bounds
+      let minX = firstQuad ? -2 : -6;
+      let maxX = 10;
+      let minY = firstQuad ? -2 : -6;
+      let maxY = 10;
+
+      vertices.forEach(v => {
+        minX = Math.min(minX, Math.floor(v.x) - 2);
+        maxX = Math.max(maxX, Math.ceil(v.x) + 2);
+        minY = Math.min(minY, Math.floor(v.y) - 2);
+        maxY = Math.max(maxY, Math.ceil(v.y) + 2);
+      });
+      userConstraints.forEach(c => {
+        c.points.forEach(p => {
+          minX = Math.min(minX, Math.floor(p.x) - 2);
+          maxX = Math.max(maxX, Math.ceil(p.x) + 2);
+          minY = Math.min(minY, Math.floor(p.y) - 2);
+          maxY = Math.max(maxY, Math.ceil(p.y) + 2);
+        });
+      });
+
+      const span = Math.max(maxX - minX, maxY - minY);
+      const midX = Math.round((minX + maxX) / 2);
+      const midY = Math.round((minY + maxY) / 2);
+      const half = Math.ceil(span / 2);
+
+      state.autoBounds = { minX: midX - half, maxX: midX + half, minY: midY - half, maxY: midY + half };
+      state.minX = state.autoBounds.minX;
+      state.maxX = state.autoBounds.maxX;
+      state.minY = state.autoBounds.minY;
+      state.maxY = state.autoBounds.maxY;
+
+      state.lastResult = {
+        mode,
+        hasObj,
+        optType,
+        obj,
+        userConstraints,
+        coreConstraints,
+        firstQuad,
+        vertices,
+        maxZ,
+        minZ,
+        noCommonRegion,
+        isUnbounded,
+        reverseDerivationHtml
+      };
+
+      renderSolutionText(state.lastResult);
+      state.animProgress = 1;
+      drawGraph();
+    }
+
+    function renderSolutionText(res) {
+      const { mode, hasObj, optType, obj, userConstraints, firstQuad, vertices, maxZ, minZ, noCommonRegion, isUnbounded, reverseDerivationHtml } = res;
+      const objStr = obj ? `${obj.varName} = ${formatExpr(obj.a, obj.b, obj.k)}` : '';
+      const allInqStr = userConstraints.map(c => `${formatExpr(c.a, c.b)} ${formatOp(c.op)} ${c.c}`).join(', ') +
+        (firstQuad ? ', x ≥ 0, y ≥ 0' : '');
+
+      let html = '';
+
+      if (mode === 'reverse') {
+        html += `
+          <div class="problem-box">
+            <div class="tag">Given Graph Points &amp; Objective</div>
+            <p>${optType} <strong>${objStr}</strong> for the feasible region bounded by the given lines.</p>
+          </div>
+          ${reverseDerivationHtml}
+        `;
+      } else {
+        html += `
+          <div class="problem-box">
+            <div class="tag">Given Problem</div>
+            <p>${hasObj ? `<strong>${optType}</strong> ${objStr} subject to the constraints: ` : 'Draw the graph of the inequality/inequalities: '}${allInqStr}.</p>
+          </div>
+          <div class="step-block">
+            <div class="step-title">Step 1: Boundary Line Equations</div>
+            <p class="sol-text">The boundary line equation${userConstraints.length > 1 || firstQuad ? 's' : ''} corresponding to the given inequalit${userConstraints.length > 1 || firstQuad ? 'ies are' : 'y is'}:</p>
+            <ul class="eq-list">
+        `;
+
+        userConstraints.forEach(c => {
+          html += `<li><span>${formatExpr(c.a, c.b)} = ${c.c}</span> <span>…… (${c.roman})</span></li>`;
+        });
+
+        if (firstQuad) {
+          const rX = toRoman(userConstraints.length + 1);
+          const rY = toRoman(userConstraints.length + 2);
+          html += `<li><span>x = 0</span> <span>…… (${rX})</span></li>`;
+          html += `<li><span>y = 0</span> <span>…… (${rY})</span></li>`;
+        }
+
+        html += `</ul></div><div class="step-block"><div class="step-title">Step 2: Table of Values &amp; Half-Plane Test</div>`;
+
+        userConstraints.forEach(c => {
+          const p1 = c.points[0];
+          const p2 = c.points[1];
+          const eqStr = `${formatExpr(c.a, c.b)} = ${c.c}`;
+          const inqStr = `${formatExpr(c.a, c.b)} ${formatOp(c.op)} ${c.c}`;
+
+          if (c.b === 0) {
+            const xVal = fmtNum(c.c / c.a);
+            const axisNote = xVal === 0 ? ' (y-axis)' : ' (Vertical line parallel to y-axis)';
+            const dirText = (c.op === '>=' && c.a > 0) || (c.op === '<=' && c.a < 0)
+              ? `to the right of x = ${xVal} including the line`
+              : `to the left of x = ${xVal} including the line`;
+            html += `
+              <div class="line-card" style="border-left: 4px solid ${c.color};">
+                <div class="line-card-header">
+                  <span class="sol-text" style="margin:0;">From equation <strong>(${c.roman})</strong>, <strong>${eqStr}</strong>${axisNote}</span>
+                  <span class="badge-status badge-info">Vertical Boundary</span>
+                </div>
+                <p class="sol-text" style="margin:0;">
+                  The half-plane representing <strong>${inqStr}</strong> lies ${dirText}.
+                </p>
+              </div>
+            `;
+            return;
+          }
+
+          if (c.a === 0) {
+            const yVal = fmtNum(c.c / c.b);
+            const axisNote = yVal === 0 ? ' (x-axis)' : ' (Horizontal line parallel to x-axis)';
+            const dirText = (c.op === '<=' && c.b > 0) || (c.op === '>=' && c.b < 0)
+              ? `below y = ${yVal} including the line`
+              : `above y = ${yVal} including the line`;
+            html += `
+              <div class="line-card" style="border-left: 4px solid ${c.color};">
+                <div class="line-card-header">
+                  <span class="sol-text" style="margin:0;">From equation <strong>(${c.roman})</strong>, <strong>${eqStr}</strong>${axisNote}</span>
+                  <span class="badge-status badge-info">Horizontal Boundary</span>
+                </div>
+                <p class="sol-text" style="margin:0;">
+                  The half-plane representing <strong>${inqStr}</strong> lies ${dirText}.
+                </p>
+              </div>
+            `;
+            return;
+          }
+
+          const rhsPart = `${c.c} ${c.a > 0 ? '−' : '+'} ${Math.abs(c.a) === 1 ? '' : Math.abs(c.a)}x`;
+          const rearranged = c.b === 1 ? ` or, y = ${rhsPart}` : ` or, y = (${rhsPart}) / ${c.b}`;
+
+          let testHtml = '';
+          if (c.c !== 0) {
+            const isTrue = (c.op === '<=' && 0 <= c.c) || (c.op === '>=' && 0 >= c.c) || (c.op === '=' && c.c === 0);
+            const badgeClass = isTrue ? 'badge-true' : 'badge-false';
+            const badgeText = isTrue ? 'True (Toward Origin)' : 'False (Away from Origin)';
+            const regionNote = isTrue ? `contains the origin (0, 0).` : `does not contain the origin (0, 0).`;
+
+            testHtml = `
+              <p class="sol-text" style="margin-top: 10px;">
+                Taking <strong>(0, 0)</strong> as a testing point in ${inqStr}:<br>
+                0 + 0 ${formatOp(c.op)} ${c.c} &nbsp;⇒&nbsp; 0 ${formatOp(c.op)} ${c.c}, which is <strong>${isTrue ? 'True' : 'False'}</strong>.
+                So, the solution region of ${inqStr} ${regionNote}
+              </p>
+            `;
+            html += `
+              <div class="line-card" style="border-left: 4px solid ${c.color};">
+                <div class="line-card-header">
+                  <span class="sol-text" style="margin:0;">From equation <strong>(${c.roman})</strong>, <strong>${eqStr}</strong>${rearranged}</span>
+                  <span class="badge-status ${badgeClass}">${badgeText}</span>
+                </div>
+                <div class="coord-flex">
+                  <table class="coord-table">
+                    <tr><td class="head-cell">x</td><td>${p1.x}</td><td>${p2.x}</td></tr>
+                    <tr><td class="head-cell">y</td><td>${p1.y}</td><td>${p2.y}</td></tr>
+                  </table>
+                  <p class="sol-text" style="margin:0; flex:1;">
+                    The boundary line (${c.roman}) passes through the points <strong>(${p1.x}, ${p1.y})</strong> and <strong>(${p2.x}, ${p2.y})</strong>.
+                  </p>
+                </div>
+                ${testHtml}
+              </div>
+            `;
+          } else {
+            html += `
+              <div class="line-card" style="border-left: 4px solid ${c.color};">
+                <div class="line-card-header">
+                  <span class="sol-text" style="margin:0;">From equation <strong>(${c.roman})</strong>, <strong>${eqStr}</strong>${rearranged}</span>
+                </div>
+                <div class="coord-flex">
+                  <table class="coord-table">
+                    <tr><td class="head-cell">x</td><td>${p1.x}</td><td>${p2.x}</td></tr>
+                    <tr><td class="head-cell">y</td><td>${p1.y}</td><td>${p2.y}</td></tr>
+                  </table>
+                  <p class="sol-text" style="margin:0; flex:1;">
+                    The boundary line (${c.roman}) passes through <strong>(${p1.x}, ${p1.y})</strong> and <strong>(${p2.x}, ${p2.y})</strong>.
+                  </p>
+                </div>
+              </div>
+            `;
+          }
+        });
+
+        if (firstQuad) {
+          const rX = toRoman(userConstraints.length + 1);
+          const rY = toRoman(userConstraints.length + 2);
+          html += `
+            <p class="sol-text">
+              Again, from (${rX}), <strong>x = 0</strong> is the y-axis, so <strong>x ≥ 0</strong> lies to the right of the y-axis.
+              From (${rY}), <strong>y = 0</strong> is the x-axis, so <strong>y ≥ 0</strong> lies above the x-axis.
+            </p>
+          `;
+        }
+        html += `</div>`;
+      }
+
+      // Step 3: Result / Evaluation
+      html += `<div class="step-block"><div class="step-title">Step ${mode === 'reverse' ? '2' : '3'}: Common Solution Region &amp; Conclusion</div>`;
+
+      if (noCommonRegion) {
+        html += `
+          <div class="no-sol-box">
+            Hence, from the graph, <strong>there is no common solution region</strong>. Therefore, the given system of inequalities does not form a convex polygon (Infeasible).
+          </div>
+        `;
+      } else if (!hasObj || vertices.length === 0) {
+        const polyName = vertices.map(v => v.label).join('');
+        const vertListStr = vertices.map(v => `${v.label}(${v.x}, ${v.y})`).join(', ');
+        html += `
+          <div class="conclusion-box">
+            All boundary lines are plotted on the graph. The shaded region represents the common solution (half-plane / feasible region)${vertices.length >= 3 ? ` forming polygon <strong>${polyName}</strong> with vertices <strong>${vertListStr}</strong>` : ''}.
+          </div>
+        `;
+      } else {
+        const polyName = vertices.map(v => v.label).join('');
+        const vertListStr = vertices.map(v => `${v.label}(${v.x}, ${v.y})`).join(', ');
+
+        if (isUnbounded) {
+          html += `
+            <div class="warning-box">
+              <strong>Note:</strong> The shaded feasible region is unbounded. Corner vertices are evaluated below.
+            </div>
+          `;
+        }
+
+        html += `
+          <p class="sol-text">
+            On the graph, the shaded region <strong>${polyName}</strong> is the Feasible Region (convex polygon) with the vertices <strong>${vertListStr}</strong>.
+          </p>
+          <p class="sol-text">For the ${optType.toLowerCase()} value of objective function <strong>${objStr}</strong>:</p>
+          <table class="eval-table">
+            <thead>
+              <tr>
+                <th>Vertices</th>
+                <th>x</th>
+                <th>y</th>
+                <th>${objStr}</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        vertices.forEach(v => {
+          const isMax = v.z === maxZ;
+          const isMin = v.z === minZ;
+          const rowClass = isMax ? 'row-max' : (isMin ? 'row-min' : '');
+          const t1 = fmtNum(obj.a * v.x);
+          const t2 = fmtNum(obj.b * v.y);
+          const s2 = t2 >= 0 ? '+' : '−';
+          let calcStr = `${t1} ${s2} ${Math.abs(t2)}`;
+          if (obj.k !== 0) {
+            const s3 = obj.k >= 0 ? '+' : '−';
+            calcStr += ` ${s3} ${Math.abs(obj.k)}`;
+          }
+          calcStr += ` = <strong>${v.z}</strong>`;
+
+          let remark = '—';
+          if (isMax) remark = '👑 Maximum';
+          else if (isMin) remark = '★ Minimum';
+
+          html += `
+            <tr class="${rowClass}">
+              <td><strong>${v.label}(${v.x}, ${v.y})</strong></td>
+              <td>${v.x}</td>
+              <td>${v.y}</td>
+              <td>${calcStr}</td>
+              <td>${remark}</td>
+            </tr>
+          `;
+        });
+
+        const maxVerts = vertices.filter(v => v.z === maxZ).map(v => `${v.label}(${v.x}, ${v.y})`).join(' and ');
+        const minVerts = vertices.filter(v => v.z === minZ).map(v => `${v.label}(${v.x}, ${v.y})`).join(' and ');
+
+        html += `
+            </tbody>
+          </table>
+          <div class="conclusion-box">
+            Hence, the <strong>maximum</strong> value of ${obj.varName} is <strong>${maxZ}</strong> at <strong>${maxVerts}</strong>
+            and the <strong>minimum</strong> value of ${obj.varName} is <strong>${minZ}</strong> at <strong>${minVerts}</strong>.
+          </div>
+        `;
+      }
+
+      html += `</div>`;
+      document.getElementById('solutionOutput').innerHTML = html;
+    }
+
+    function drawGraph() {
+      const canvas = document.getElementById('lppCanvas');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width;
+      const H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const spanX = state.maxX - state.minX;
+      const step = spanX > 16 ? 2 : 1;
+      document.getElementById('scaleText').textContent = `Scale: 1 major division = ${step} unit${step > 1 ? 's' : ''}`;
+
+      const pad = 30;
+      const plotW = W - 2 * pad;
+      const plotH = H - 2 * pad;
+
+      const toPxX = x => pad + ((x - state.minX) / (state.maxX - state.minX)) * plotW;
+      const toPxY = y => H - pad - ((y - state.minY) / (state.maxY - state.minY)) * plotH;
+
+      // Grid lines
+      if (state.grid) {
+        ctx.lineWidth = 1;
+        for (let v = state.minX; v <= state.maxX; v += step) {
+          const px = toPxX(v);
+          ctx.strokeStyle = (v % (step * 5) === 0) ? '#cbd5e1' : '#e2e8f0';
+          ctx.beginPath();
+          ctx.moveTo(px, pad);
+          ctx.lineTo(px, H - pad);
+          ctx.stroke();
+        }
+        for (let v = state.minY; v <= state.maxY; v += step) {
+          const py = toPxY(v);
+          ctx.strokeStyle = (v % (step * 5) === 0) ? '#cbd5e1' : '#e2e8f0';
+          ctx.beginPath();
+          ctx.moveTo(pad, py);
+          ctx.lineTo(W - pad, py);
+          ctx.stroke();
+        }
+      }
+
+      // Axes
+      const originX = toPxX(0);
+      const originY = toPxY(0);
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+
+      if (originY >= pad && originY <= H - pad) {
+        ctx.beginPath();
+        ctx.moveTo(pad - 6, originY);
+        ctx.lineTo(W - pad + 10, originY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(W - pad + 10, originY);
+        ctx.lineTo(W - pad + 3, originY - 4);
+        ctx.lineTo(W - pad + 3, originY + 4);
+        ctx.fillStyle = '#0f172a';
+        ctx.fill();
+        ctx.font = 'bold 13px sans-serif';
+        ctx.fillText('X', W - pad + 13, originY + 4);
+      }
+
+      if (originX >= pad && originX <= W - pad) {
+        ctx.beginPath();
+        ctx.moveTo(originX, H - pad + 6);
+        ctx.lineTo(originX, pad - 10);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(originX, pad - 10);
+        ctx.lineTo(originX - 4, pad - 3);
+        ctx.lineTo(originX + 4, pad - 3);
+        ctx.fillStyle = '#0f172a';
+        ctx.fill();
+        ctx.fillText('Y', originX - 4, pad - 14);
+      }
+
+      // Axis Numbers
+      ctx.font = '11px Consolas, monospace';
+      ctx.fillStyle = '#475569';
+      for (let v = state.minX; v <= state.maxX; v += step) {
+        if (v === 0) continue;
+        const px = toPxX(v);
+        ctx.fillText(v, px - 6, Math.min(H - pad + 14, Math.max(pad + 12, originY + 14)));
+      }
+      for (let v = state.minY; v <= state.maxY; v += step) {
+        if (v === 0) continue;
+        const py = toPxY(v);
+        ctx.fillText(v, Math.max(4, Math.min(W - pad - 16, originX - 20)), py + 4);
+      }
+      if (originX >= pad && originX <= W - pad && originY >= pad && originY <= H - pad) {
+        ctx.fillText('0', originX - 11, originY + 13);
+      }
+
+      const res = state.lastResult;
+      if (!res) return;
+
+      // Clipped Feasible Region / Half-Plane Shading
+      if (state.shading && !res.noCommonRegion && state.animProgress >= 0.8) {
+        const viewConstraints = [
+          ...res.coreConstraints,
+          { a: 1, b: 0, op: '<=', c: state.maxX },
+          { a: 1, b: 0, op: '>=', c: state.minX },
+          { a: 0, b: 1, op: '<=', c: state.maxY },
+          { a: 0, b: 1, op: '>=', c: state.minY }
+        ];
+        let polyPts = [];
+        for (let i = 0; i < viewConstraints.length; i++) {
+          for (let j = i + 1; j < viewConstraints.length; j++) {
+            const pt = intersectLines(viewConstraints[i], viewConstraints[j]);
+            if (pt && satisfiesAll(pt, viewConstraints)) {
+              if (!polyPts.some(p => Math.abs(p.x - pt.x) < 1e-6 && Math.abs(p.y - pt.y) < 1e-6)) {
+                polyPts.push(pt);
+              }
+            }
+          }
+        }
+        if (polyPts.length >= 3) {
+          const cx = polyPts.reduce((s, p) => s + p.x, 0) / polyPts.length;
+          const cy = polyPts.reduce((s, p) => s + p.y, 0) / polyPts.length;
+          polyPts.sort((p1, p2) => Math.atan2(p1.y - cy, p1.x - cx) - Math.atan2(p2.y - cy, p2.x - cx));
+
+          ctx.save();
+          ctx.beginPath();
+          polyPts.forEach((v, idx) => {
+            const vx = toPxX(v.x);
+            const vy = toPxY(v.y);
+            if (idx === 0) ctx.moveTo(vx, vy);
+            else ctx.lineTo(vx, vy);
+          });
+          ctx.closePath();
+          ctx.fillStyle = 'rgba(79, 70, 229, 0.22)';
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      // Draw Boundary Lines
+      const totalLines = res.userConstraints.length;
+      res.userConstraints.forEach((c, idx) => {
+        const lineStartProg = idx / totalLines;
+        const lineEndProg = (idx + 1) / totalLines;
+        if (state.animProgress <= lineStartProg) return;
+
+        let localProg = Math.min(1, (state.animProgress - lineStartProg) / (lineEndProg - lineStartProg));
+        let endpoints = [];
+
+        if (Math.abs(c.b) > 1e-9) {
+          const yAtMin = (c.c - c.a * state.minX) / c.b;
+          const yAtMax = (c.c - c.a * state.maxX) / c.b;
+          if (yAtMin >= state.minY - 1e-6 && yAtMin <= state.maxY + 1e-6) endpoints.push({ x: state.minX, y: yAtMin });
+          if (yAtMax >= state.minY - 1e-6 && yAtMax <= state.maxY + 1e-6) endpoints.push({ x: state.maxX, y: yAtMax });
+        }
+        if (Math.abs(c.a) > 1e-9) {
+          const xAtMin = (c.c - c.b * state.minY) / c.a;
+          const xAtMax = (c.c - c.b * state.maxY) / c.a;
+          if (xAtMin > state.minX && xAtMin < state.maxX) endpoints.push({ x: xAtMin, y: state.minY });
+          if (xAtMax > state.minX && xAtMax < state.maxX) endpoints.push({ x: xAtMax, y: state.maxY });
+        }
+
+        if (endpoints.length >= 2) {
+          const pA = endpoints[0];
+          const pB = endpoints[endpoints.length - 1];
+          const curX = pA.x + (pB.x - pA.x) * localProg;
+          const curY = pA.y + (pB.y - pA.y) * localProg;
+
+          ctx.beginPath();
+          ctx.moveTo(toPxX(pA.x), toPxY(pA.y));
+          ctx.lineTo(toPxX(curX), toPxY(curY));
+          ctx.strokeStyle = c.color;
+          ctx.lineWidth = 2.4;
+          ctx.stroke();
+        }
+      });
+
+      // Draw Corner Vertices
+      state.screenVertices = [];
+      if (state.animProgress >= 0.9 && !res.noCommonRegion) {
+        res.vertices.forEach(v => {
+          const vx = toPxX(v.x);
+          const vy = toPxY(v.y);
+          state.screenVertices.push({ ...v, px: vx, py: vy });
+
+          const isMax = res.hasObj && v.z === res.maxZ;
+          ctx.beginPath();
+          ctx.arc(vx, vy, isMax ? 6 : 5, 0, Math.PI * 2);
+          ctx.fillStyle = isMax ? '#059669' : '#0f172a';
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#ffffff';
+          ctx.stroke();
+
+          if (state.labels) {
+            ctx.font = 'bold 12px Segoe UI, sans-serif';
+            ctx.fillStyle = '#0f172a';
+            const offsetX = v.x === 0 ? -36 : 8;
+            const offsetY = v.y === 0 ? 16 : -8;
+            ctx.fillText(`${v.label}(${v.x},${v.y})`, vx + offsetX, vy + offsetY);
+          }
+        });
+      }
+    }
+
+    function toggleOption(key) {
+      state[key] = !state[key];
+      const btnMap = { shading: 'btnShading', labels: 'btnLabels', grid: 'btnGrid' };
+      const labelMap = { shading: 'Shading', labels: 'Labels', grid: 'Grid' };
+      const btn = document.getElementById(btnMap[key]);
+      btn.textContent = `${labelMap[key]}: ${state[key] ? 'ON' : 'OFF'}`;
+      btn.classList.toggle('active', state[key]);
+      drawGraph();
+    }
+
+    function changeZoom(delta) {
+      state.minX -= delta / 2;
+      state.maxX += delta / 2;
+      state.minY -= delta / 2;
+      state.maxY += delta / 2;
+      drawGraph();
+    }
+
+    function resetZoom() {
+      state.minX = state.autoBounds.minX;
+      state.maxX = state.autoBounds.maxX;
+      state.minY = state.autoBounds.minY;
+      state.maxY = state.autoBounds.maxY;
+      drawGraph();
+    }
+
+    function animateGraph() {
+      state.animProgress = 0;
+      const duration = 1200;
+      const start = performance.now();
+      function frame(now) {
+        state.animProgress = Math.min(1, (now - start) / duration);
+        drawGraph();
+        if (state.animProgress < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function exportPNG() {
+      const canvas = document.getElementById('lppCanvas');
+      const link = document.createElement('a');
+      link.download = 'B_and_B_LPP_Graph.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    function copySolution() {
+      const text = document.getElementById('solutionOutput').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Solution copied to clipboard!');
+      });
+    }
+
+    const canvasEl = document.getElementById('lppCanvas');
+    const tooltipEl = document.getElementById('vertexTooltip');
+
+    canvasEl.addEventListener('mousemove', (e) => {
+      const rect = canvasEl.getBoundingClientRect();
+      const scaleX = canvasEl.width / rect.width;
+      const scaleY = canvasEl.height / rect.height;
+      const mx = (e.clientX - rect.left) * scaleX;
+      const my = (e.clientY - rect.top) * scaleY;
+
+      const hit = state.screenVertices.find(v => Math.hypot(v.px - mx, v.py - my) < 12);
+      if (hit && state.lastResult && state.lastResult.hasObj) {
+        tooltipEl.style.display = 'block';
+        tooltipEl.style.left = `${e.offsetX + 14}px`;
+        tooltipEl.style.top = `${e.offsetY - 12}px`;
+        tooltipEl.textContent = `${hit.label}(${hit.x}, ${hit.y}) → ${state.lastResult.obj.varName} = ${hit.z}`;
+      } else {
+        tooltipEl.style.display = 'none';
+      }
+    });
+
+    canvasEl.addEventListener('mouseleave', () => {
+      tooltipEl.style.display = 'none';
+    });
+
+    window.onload = () => {
+      // Forward default: Exercise 5(a)
+      addConstraintRow('2x + y <= 14');
+      addConstraintRow('x + 2y <= 10');
+
+      // Reverse default: Exercise 8(a)
+      addRevLineRow('(2, 0)', '(0, 5)', 'origin');
+      addRevLineRow('(0, 3)', '(5, 0)', 'origin');
+
+      solveForward();
+    };
+  </script>
+</body>
+</html>
